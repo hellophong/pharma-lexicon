@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ArrowDown,
   ArrowRight,
   ArrowUpRight,
   Bookmark,
   BookOpen,
   Check,
   ChevronRight,
-  Clock3,
-  Compass,
   Layers3,
   Menu,
   Plus,
@@ -48,55 +45,13 @@ function App() {
   const [onlySaved, setOnlySaved] = useState(false);
   const [all, setAll] = useState(false);
   const [menu, setMenu] = useState(false);
-  const [storyStep, setStoryStep] = useState(0);
   const saved = useStoredList("pl:bookmarks:v1");
   const progress = useStoredList("pl:progress:v1");
   const searchRef = useRef<HTMLInputElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const storyRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const hash = () => setRoute(initialRoute());
     window.addEventListener("hashchange", hash);
     return () => window.removeEventListener("hashchange", hash);
-  }, []);
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      if (!media.matches && innerWidth > 760) {
-        heroRef.current?.style.setProperty(
-          "--drift",
-          `${Math.min(scrollY, 900) * 0.12}px`,
-        );
-      } else heroRef.current?.style.setProperty("--drift", "0px");
-    };
-    const scroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    window.addEventListener("scroll", scroll, { passive: true });
-    media.addEventListener("change", scroll);
-    update();
-    return () => {
-      window.removeEventListener("scroll", scroll);
-      media.removeEventListener("change", scroll);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-  useEffect(() => {
-    const elements = storyRef.current?.querySelectorAll("[data-story]");
-    if (!elements) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting)
-            setStoryStep(Number((entry.target as HTMLElement).dataset.story));
-        });
-      },
-      { rootMargin: "-25% 0px -45% 0px", threshold: 0 },
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
   }, []);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -147,15 +102,6 @@ function App() {
         : "smooth",
     });
   };
-  const runSearch = (value: string) => {
-    setQuery(value);
-    setAll(true);
-    setCategory("All categories");
-    setLetter("All");
-    setOnlySaved(false);
-    track("search", { length: value.length });
-    document.getElementById("lexicon")?.scrollIntoView({ behavior: "smooth" });
-  };
   const clear = () => {
     setQuery("");
     setCategory("All categories");
@@ -201,9 +147,6 @@ function App() {
           <a href="#lexicon" onClick={() => setMenu(false)}>
             The lexicon
           </a>
-          <a href="#learning" onClick={() => setMenu(false)}>
-            Learning paths
-          </a>
           <button
             onClick={() => {
               setMenu(false);
@@ -237,270 +180,13 @@ function App() {
         </button>
       </header>
       <main id="main">
-        <section className="hero" ref={heroRef}>
-          <div className="hero-grid" aria-hidden="true" />
-          <div className="hero-topline">
-            <span>
-              <span className="status-dot" /> THE FIELD GUIDE FOR PHARMA AGENCY
-              MINDS
-            </span>
-            <span>VOL. 01 / THE FOUNDATIONS</span>
-          </div>
-          <div className="hero-content">
-            <div className="hero-copy">
-              <h1>
-                Pharma moves fast.
-                <br />
-                Its language shouldn’t
-                <br />
-                <em>slow you down.</em>
-              </h1>
-              <p>
-                Know the term. Understand the context.
-                <br />
-                Make your next move with confidence.
-              </p>
-              <div className="hero-actions">
-                <button className="button primary" onClick={browse}>
-                  Explore the lexicon <ArrowRight size={18} />
-                </button>
-                <button
-                  className="text-button"
-                  onClick={() => startPath("first-mlr")}
-                >
-                  Start the onboarding path <ArrowUpRight size={16} />
-                </button>
-              </div>
-            </div>
-            <div className="acronym-study" aria-hidden="true">
-              <span className="study-coordinate">
-                FIG. 01 — LANGUAGE, DECODED
-              </span>
-              <span className="ghost-acronym">Rx</span>
-              <div className="study-axis axis-one" />
-              <div className="study-axis axis-two" />
-              <div className="study-main">
-                MLR<span className="study-asterisk">✳</span>
-              </div>
-              <div className="study-label label-one">
-                <i /> REVIEW & COMPLIANCE
-              </div>
-              <div className="study-label label-two">
-                Medical. Legal. Regulatory.
-                <span>Three letters. A whole workflow.</span>
-              </div>
-              <div className="study-caption">
-                Acronyms are only the beginning.
-                <ArrowDown size={15} />
-              </div>
-            </div>
-          </div>
-          <form
-            className="hero-search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              runSearch(query);
-            }}
-          >
-            <Search size={25} />
-            <label className="sr-only" htmlFor="hero-search">
-              Search the lexicon
-            </label>
-            <input
-              id="hero-search"
-              ref={searchRef}
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setAll(true);
-              }}
-              placeholder="What did they just say?"
-              autoComplete="off"
-            />
-            <kbd>/</kbd>
-            <button type="submit" aria-label="Search glossary">
-              <ArrowRight size={25} />
-            </button>
-          </form>
-          <div className="search-footnote">
-            <div>
-              TRY A TERM{" "}
-              <button onClick={() => runSearch("MLR")}>
-                MLR <ArrowUpRight size={12} />
-              </button>
-              <button onClick={() => runSearch("HEOR")}>
-                HEOR <ArrowUpRight size={12} />
-              </button>
-              <button onClick={() => runSearch("SOW")}>
-                SOW <ArrowUpRight size={12} />
-              </button>
-            </div>
-            <span>
-              <strong>50</strong> foundational terms. A shared starting point.
-            </span>
-          </div>
-        </section>
-        <section className="trust-strip">
-          <span>
-            BUILT FOR THE PEOPLE
-            <br />
-            BEHIND THE WORK.
-          </span>
-          <div>Account minds.</div>
-          <div>Creative thinkers.</div>
-          <div>Strategic partners.</div>
-          <div>Everyone learning.</div>
-        </section>
-        <section className="friction section-shell">
-          <div className="section-heading">
-            <span className="eyebrow">01 / THE COST OF NOT KNOWING</span>
-            <h2>
-              A small gap in language.
-              <br />A bigger gap in <em>understanding.</em>
-            </h2>
-            <p>
-              One unfamiliar acronym can change the entire conversation. Shared
-              fluency keeps good work moving.
-            </p>
-          </div>
-          <div className="friction-grid">
-            <div>
-              <span className="friction-number">01</span>
-              <h3>The meeting moves on.</h3>
-              <p>
-                You’re still decoding the sentence.
-                <br />
-                The next decision is already being made.
-              </p>
-            </div>
-            <div>
-              <span className="friction-number">02</span>
-              <h3>The brief gets interpreted.</h3>
-              <p>
-                Same words. Different assumptions.
-                <br />A preventable round of rework.
-              </p>
-            </div>
-            <div>
-              <span className="friction-number">03</span>
-              <h3>The timeline feels it.</h3>
-              <p>
-                Missed dependencies become missed dates.
-                <br />
-                Clarity protects time, budget, and trust.
-              </p>
-            </div>
-          </div>
-        </section>
-        <section className="story" ref={storyRef}>
-          <div className="story-inner">
-            <div className="story-intro">
-              <span className="eyebrow">02 / FROM LANGUAGE TO ACTION</span>
-              <h2>
-                Don’t just know it.
-                <br />
-                <em>Know what to do.</em>
-              </h2>
-              <p>
-                A definition gets you started.
-                <br />
-                Context gets the work moving.
-              </p>
-              <div className="story-visual" aria-hidden="true">
-                <span className="story-big">MLR</span>
-                <div className="story-orbit" />
-                <span className="story-small">
-                  {
-                    [
-                      "LISTEN FOR THE SIGNAL",
-                      "MAKE THE CONNECTION",
-                      "MOVE WITH CONFIDENCE",
-                    ][storyStep]
-                  }
-                </span>
-                <div className="story-dots">
-                  {[0, 1, 2].map((i) => (
-                    <span key={i} className={i === storyStep ? "active" : ""} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="story-steps">
-              <article
-                data-story="0"
-                className={storyStep === 0 ? "active" : ""}
-              >
-                <span className="step-number">01 / HEAR IT</span>
-                <blockquote>
-                  “We need this through
-                  <br />
-                  <em>MLR by Friday.</em>”
-                </blockquote>
-                <p>
-                  Six words that can shape your whole week.
-                  <br />
-                  Let’s unpack the three letters that matter.
-                </p>
-              </article>
-              <article
-                data-story="1"
-                className={storyStep === 1 ? "active" : ""}
-              >
-                <span className="step-number">02 / DECODE IT</span>
-                <h3>
-                  Medical. Legal.
-                  <br />
-                  Regulatory.
-                </h3>
-                <p>
-                  The cross-functional review that helps ensure your materials
-                  are accurate, appropriate, and ready for their intended use.
-                </p>
-                <span className="story-tag">
-                  CONTEXT: AGENCY REVIEW WORKFLOW
-                </span>
-              </article>
-              <article
-                data-story="2"
-                className={storyStep === 2 ? "active" : ""}
-              >
-                <span className="step-number">03 / ACT ON IT</span>
-                <h3>
-                  Turn a deadline
-                  <br />
-                  into a clear plan.
-                </h3>
-                <ul>
-                  <li>
-                    <Check size={16} />
-                    Confirm the submission cutoff.
-                  </li>
-                  <li>
-                    <Check size={16} />
-                    Check references and review requirements.
-                  </li>
-                  <li>
-                    <Check size={16} />
-                    Ask: first review or final approval?
-                  </li>
-                </ul>
-                <button
-                  className="text-button light"
-                  onClick={() => openTerm("mlr")}
-                >
-                  Read the full MLR field note <ArrowRight size={16} />
-                </button>
-              </article>
-            </div>
-          </div>
-        </section>
         <section id="lexicon" className="lexicon section-shell">
           <div className="lexicon-heading">
             <div>
               <span className="eyebrow">03 / YOUR EVERYDAY REFERENCE</span>
-              <h2>
+              <h1>
                 The lexicon<span className="title-dot">.</span>
-              </h2>
+              </h1>
             </div>
             <p>
               Find the meaning.
@@ -516,6 +202,7 @@ function App() {
               </label>
               <input
                 id="library-search"
+                ref={searchRef}
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
@@ -696,99 +383,7 @@ function App() {
             </p>
           )}
         </section>
-        <section className="context-note section-shell">
-          <div className="context-symbol" aria-hidden="true">
-            A<span>≠</span>A
-          </div>
-          <div>
-            <span className="eyebrow">A NOTE ON CONTEXT</span>
-            <h3>Same acronym. Different conversation.</h3>
-            <p>
-              MLR can mean a review team, a review process, or Medical Loss
-              Ratio. We label the context so you can ask the right question—not
-              make the wrong assumption.
-            </p>
-          </div>
-          <button className="text-button" onClick={() => openTerm("mlr")}>
-            Explore the meanings <ArrowUpRight size={17} />
-          </button>
-        </section>
-        <section id="learning" className="learning-section section-shell">
-          <div className="section-heading learning-heading">
-            <div>
-              <span className="eyebrow">04 / BUILD YOUR FLUENCY</span>
-              <h2>
-                A head start.
-                <br />
-                <em>One short path at a time.</em>
-              </h2>
-            </div>
-            <p>
-              New to pharma? New to a workstream?
-              <br />
-              Start with the language you’ll actually use.
-            </p>
-          </div>
-          <div className="paths-grid">
-            {learningPaths.map((p, i) => {
-              const count = p.terms.filter((id) =>
-                progress.items.includes(`${p.id}:${id}`),
-              ).length;
-              return (
-                <button
-                  className="path-card"
-                  key={p.id}
-                  onClick={() => startPath(p.id)}
-                >
-                  <div className="path-top">
-                    <span className="path-number">0{i + 1}</span>
-                    {i === 0 ? (
-                      <Compass size={29} />
-                    ) : i === 1 ? (
-                      <Layers3 size={29} />
-                    ) : i === 2 ? (
-                      <span className="mini-bars">
-                        <i />
-                        <i />
-                        <i />
-                        <i />
-                      </span>
-                    ) : (
-                      <ArrowUpRight size={29} />
-                    )}
-                  </div>
-                  <span className="eyebrow">{p.category}</span>
-                  <h3>{p.title}</h3>
-                  <p>{p.description}</p>
-                  <div className="path-meta">
-                    <span>
-                      <Clock3 size={13} />
-                      {p.minutes} min
-                    </span>
-                    <span>
-                      <BookOpen size={13} />
-                      {p.terms.length} terms
-                    </span>
-                  </div>
-                  <div className="progress-track">
-                    <span
-                      style={{ width: `${(count / p.terms.length) * 100}%` }}
-                    />
-                  </div>
-                  <div className="path-bottom">
-                    <span>
-                      {count
-                        ? `${count} of ${p.terms.length} completed`
-                        : "Ready when you are"}
-                    </span>
-                    <ArrowRight size={18} />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-        <section className="contribute section-shell">
+        <section id="contribute" className="contribute section-shell">
           <div>
             <span className="eyebrow">05 / BETTER TOGETHER</span>
             <h2>
@@ -836,80 +431,55 @@ function App() {
             ))}
           </div>
         </section>
-        <section className="vision">
-          <div className="vision-top">
-            <span className="eyebrow">SHARED LANGUAGE. STRONGER TEAMS.</span>
-            <div>
-              <span>Faster onboarding</span>
-              <span>More confident conversations</span>
-              <span>Fewer preventable misunderstandings</span>
-            </div>
-          </div>
-          <h2>
-            Fluency changes
-            <br />
-            <em>everything.</em>
-            <span aria-hidden="true">✳</span>
-          </h2>
-          <div className="vision-bottom">
-            <p>
-              From your first client call to your next product launch.
-              <br />A shared language across departments. Knowledge you can
-              reuse.
-              <br />A foundation for the way your agency learns.
-            </p>
-            <button className="button citron" onClick={browse}>
-              Find your next field note <ArrowRight size={19} />
+      </main>
+      <div className="footer-surface">
+        <footer className="site-footer" id="editorial-policy">
+          <div className="footer-top">
+            <a className="brand" href="#">
+              <span className="brand-mark">
+                p<span>l</span>
+                <i />
+              </span>
+              <span>
+                pharma<span className="brand-light">lexicon</span>
+              </span>
+            </a>
+            <span>LESS DECODING. MORE DOING.</span>
+            <button
+              className="text-button"
+              onClick={() => startPath("first-mlr")}
+            >
+              Begin onboarding <ArrowUpRight size={15} />
             </button>
           </div>
-        </section>
-      </main>
-      <footer className="site-footer" id="editorial-policy">
-        <div className="footer-top">
-          <a className="brand" href="#">
-            <span className="brand-mark">
-              p<span>l</span>
-              <i />
-            </span>
+          <div className="footer-bottom">
+            <p>
+              An educational field guide, with a U.S. pharma focus. Not medical,
+              legal, or regulatory advice.
+              <br />
+              Definitions link to references; agency guidance is editorial.
+              Confirm local procedures with your team.
+            </p>
             <span>
-              pharma<span className="brand-light">lexicon</span>
+              PROTOTYPE / SEPTEMBER 2026
+              <br />
+              50 TERMS. ROOM TO GROW.
             </span>
-          </a>
-          <span>LESS DECODING. MORE DOING.</span>
-          <button
-            className="text-button"
-            onClick={() => startPath("first-mlr")}
-          >
-            Begin onboarding <ArrowUpRight size={15} />
-          </button>
-        </div>
-        <div className="footer-bottom">
-          <p>
-            An educational field guide, with a U.S. pharma focus. Not medical,
-            legal, or regulatory advice.
-            <br />
-            Definitions link to references; agency guidance is editorial.
-            Confirm local procedures with your team.
-          </p>
-          <span>
-            PROTOTYPE / SEPTEMBER 2026
-            <br />
-            50 TERMS. ROOM TO GROW.
-          </span>
-        </div>
-        <details className="editorial-policy">
-          <summary>Our editorial approach</summary>
-          <p>
-            Regulatory, clinical, and access entries use public primary or
-            professional sources. Agency conventions reflect common usage and
-            vary by organization. Examples and suggested actions are original
-            educational content. “Published” means visible in this prototype,
-            not independently approved by a compliance reviewer. Production
-            release should include named subject-matter review. Editorial source
-            check: September 19, 2026.
-          </p>
-        </details>
-      </footer>
+          </div>
+          <details className="editorial-policy">
+            <summary>Our editorial approach</summary>
+            <p>
+              Regulatory, clinical, and access entries use public primary or
+              professional sources. Agency conventions reflect common usage and
+              vary by organization. Examples and suggested actions are original
+              educational content. “Published” means visible in this prototype,
+              not independently approved by a compliance reviewer. Production
+              release should include named subject-matter review. Editorial
+              source check: September 19, 2026.
+            </p>
+          </details>
+        </footer>
+      </div>
       {term && (
         <Modal title={`${term.acronym} field note`} onClose={close}>
           <TermDetail

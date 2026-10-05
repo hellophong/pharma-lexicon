@@ -5,9 +5,8 @@ test("search, combined filters, empty state, saved terms, and persistence", asyn
 }) => {
   await page.goto("/");
   await page
-    .getByLabel("Search the lexicon", { exact: true })
+    .getByLabel("Search terms, phrases, or definitions")
     .fill("medical loss");
-  await page.getByRole("button", { name: "Search glossary" }).click();
   await expect(page.locator(".term-card")).toHaveCount(1);
   await expect(page.locator(".term-card")).toContainText("MLR");
   await page.getByRole("button", { name: "Save MLR", exact: true }).click();
@@ -45,6 +44,7 @@ test("term deep links, related terms, context, and keyboard focus", async ({
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await page.getByRole("link", { name: /MLR Medical, Legal/ }).focus();
   await page.keyboard.press("Enter");
+  await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(
     page.getByRole("link", { name: /MLR Medical, Legal/ }),
@@ -56,7 +56,7 @@ test("term deep links, related terms, context, and keyboard focus", async ({
 });
 test("learning sequence completes and persists progress", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Start the onboarding path" }).click();
+  await page.getByRole("button", { name: "Begin onboarding" }).click();
   for (let i = 0; i < 4; i++)
     await page.getByRole("button", { name: "Mark read & continue" }).click();
   await page
@@ -64,13 +64,12 @@ test("learning sequence completes and persists progress", async ({ page }) => {
     .click();
   await expect(page.getByRole("dialog")).toContainText("PATH COMPLETE");
   await page.keyboard.press("Escape");
-  await expect(page.locator(".path-card").first()).toContainText(
-    "5 of 5 completed",
-  );
   await page.reload();
-  await expect(page.locator(".path-card").first()).toContainText(
-    "5 of 5 completed",
-  );
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("pl:progress:v1")!).length,
+    ),
+  ).toBe(5);
 });
 test("suggestion validates and saves a local moderation record", async ({
   page,
@@ -124,9 +123,9 @@ test("responsive layouts, reduced motion, and representative screenshots", async
     );
   expect(
     await page
-      .locator(".acronym-study")
-      .evaluate((el) => getComputedStyle(el).transform),
-  ).toBe("none");
+      .locator("html")
+      .evaluate((el) => getComputedStyle(el).scrollBehavior),
+  ).toBe("auto");
   await page.screenshot({
     path: "screenshots/mobile-reduced-motion.png",
     fullPage: true,
@@ -199,7 +198,7 @@ test("capture presentation frames and check compact viewport overflow", async ({
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: "screenshots/desktop-hero.png" });
+  await page.screenshot({ path: "screenshots/desktop-overview.png" });
   await page
     .locator("#lexicon")
     .evaluate((el) =>
@@ -210,7 +209,7 @@ test("capture presentation frames and check compact viewport overflow", async ({
   await page.screenshot({ path: "screenshots/desktop-field-note.png" });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.screenshot({ path: "screenshots/mobile-hero.png" });
+  await page.screenshot({ path: "screenshots/mobile-overview.png" });
   await page
     .locator("#lexicon")
     .evaluate((el) =>
@@ -223,4 +222,45 @@ test("generate code-native social sharing image", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 630 });
   await page.goto("/social.svg");
   await page.screenshot({ path: "public/social.png" });
+});
+
+test("simplified page starts with the unchanged lexicon and retains contribution and footer", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("main > section")).toHaveCount(2);
+  await expect(page.locator("main > section").first()).toHaveAttribute(
+    "id",
+    "lexicon",
+  );
+  await expect(page.locator("main > section").last()).toHaveAttribute(
+    "id",
+    "contribute",
+  );
+  await expect(
+    page.getByRole("navigation").getByText("Learning paths"),
+  ).toHaveCount(0);
+  await expect(page.locator(".term-card")).toHaveCount(6);
+  await page.keyboard.press("/");
+  await expect(
+    page.getByLabel("Search terms, phrases, or definitions"),
+  ).toBeFocused();
+  expect(
+    await page
+      .locator(".footer-surface")
+      .evaluate((el) => getComputedStyle(el).backgroundColor),
+  ).toBe("rgb(23, 61, 52)");
+  await page
+    .locator("#contribute")
+    .getByRole("button", { name: "Suggest a term" })
+    .click();
+  await expect(page.getByRole("dialog")).toHaveAccessibleName("Suggest a term");
+  await page.keyboard.press("Escape");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Toggle navigation" }).click();
+  await page
+    .getByRole("navigation")
+    .getByRole("button", { name: "Suggest a term" })
+    .click();
+  await expect(page.getByRole("dialog")).toBeVisible();
 });

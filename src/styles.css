@@ -817,7 +817,8 @@ button {
   align-items: flex-end;
   margin-bottom: 33px;
 }
-.lexicon-heading h2 {
+.lexicon-heading h1 {
+  line-height: 1.14;
   font-size: 70px;
   letter-spacing: -3px;
   margin-top: 13px;
@@ -2123,7 +2124,7 @@ button {
     align-items: flex-start;
     margin-bottom: 27px;
   }
-  .lexicon-heading h2 {
+  .lexicon-heading h1 {
     font-size: 52px;
     letter-spacing: -2.5px;
   }
@@ -2608,4 +2609,29 @@ button {
   .axis-two {
     top: 155px;
   }
+}
+
+/* Keep the closing footer in the product's deep forest green. */
+.footer-surface {
+  background: var(--forest);
+  color: var(--paper);
+}
+.footer-surface .brand-mark i {
+  background: var(--paper);
+}
+.footer-surface .footer-top {
+  border-color: #536f5a;
+}
+.footer-surface .footer-bottom,
+.footer-surface .editorial-policy {
+  color: #c3d1b9;
+}
+.footer-surface .text-button {
+  color: var(--citron);
+}
+.footer-surface .text-button:hover {
+  color: var(--white);
+}
+.footer-surface :focus-visible {
+  outline-color: var(--citron);
 }

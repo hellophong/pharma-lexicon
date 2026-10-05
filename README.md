@@ -1,6 +1,6 @@
 # Pharma Lexicon
 
-An editorial field guide for pharmaceutical agency teams: 50 foundational terms, six categories, practical account actions, and four short learning paths. Built with React 19, TypeScript, and Vite. No backend or third-party analytics service is connected.
+An editorial field guide for pharmaceutical agency teams: 50 foundational terms, six categories, practical account actions, and a local term-submission workflow. Existing learning-path deep links and the footer’s onboarding action remain available. Built with React 19, TypeScript, and Vite. No backend or third-party analytics service is connected.
 
 ## Run locally
 
@@ -31,9 +31,9 @@ pnpm preview
 
 Warm paper, forest green, and restrained citron give the library an editorial identity. Self-hosted DM Sans supports reading; Bodoni Moda creates distinct acronym and headline moments. The visuals are code-native typography and lines, with no stock photos or image dependencies.
 
-The hero uses passive scroll input, one requestAnimationFrame update, and transform-only motion. The three-step narrative uses an IntersectionObserver and sticky composition. Normal scrolling is preserved. Mobile removes sticky storytelling and parallax. Reduced-motion preferences disable transforms, transitions, and smooth scrolling.
+The simplified page starts directly with the lexicon beneath navigation, followed by the contribution section and a deep-green footer. The hero, audience strip, problem statement, storytelling, context note, learning-path cards, and product-vision sections have been removed. The glossary layout and capabilities are unchanged. Reduced-motion preferences disable transitions and smooth scrolling.
 
-The reusable design system lives in `src/styles.css`: color, type, spacing, container and motion tokens; button variants; filter chips; cards; progress bars; search, focus, and empty states. Most information is progressively disclosed through native modal dialogs. The keyboard shortcut `/` focuses the main search. Escape closes dialogs; native dialogs contain keyboard focus and return it to the invoking control.
+The reusable design system lives in `src/styles.css`: color, type, spacing, container and motion tokens; button variants; filter chips; cards; progress bars; search, focus, and empty states. Most information is progressively disclosed through native modal dialogs. The keyboard shortcut `/` focuses the lexicon search. Escape closes dialogs; native dialogs contain keyboard focus and return it to the invoking control.
 
 ## Architecture
 
