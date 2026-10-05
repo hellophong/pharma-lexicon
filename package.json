@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run tests/content.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:pages": "playwright test --config playwright.pages.config.ts"
   },
   "dependencies": {
     "react": "^19.1.1",

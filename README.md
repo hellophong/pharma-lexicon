@@ -25,7 +25,18 @@ pnpm test:e2e
 pnpm preview
 ```
 
-`pnpm format` formats source files. `pnpm build` type-checks and generates `dist/`. Deploy `dist/` to a static host at the domain root. Hash routes work without server rewrite rules. No environment variables or secrets are required. The branch is `feat/pharma-lexicon-prototype`; there is no automatic deployment or default-branch merge.
+`pnpm format` formats source files. `pnpm build` type-checks and generates `dist/`. The public site is https://hellophong.github.io/pharma-lexicon/. Pushes to `feat/pharma-lexicon-prototype` run `.github/workflows/deploy-pages.yml`: install the locked dependencies, check formatting/lint/tests, build, and publish `dist/` through GitHub Pages. Deployment uses GitHub’s short-lived workflow token, with write permissions limited to the deployment job. No personal token or hosting secret is stored in the repository. There is no merge step or repository visibility change.
+
+The workflow sets `VITE_BASE_PATH=/pharma-lexicon/` for the production build. Local development defaults to `/`, preserving http://127.0.0.1:5173/. Hash routes such as `https://hellophong.github.io/pharma-lexicon/#term/mlr` work without server rewrite rules and copied term links retain the repository prefix.
+
+To reproduce the hosted build locally:
+
+```sh
+VITE_BASE_PATH=/pharma-lexicon/ pnpm build
+VITE_BASE_PATH=/pharma-lexicon/ pnpm preview
+```
+
+Open http://localhost:4173/pharma-lexicon/. Run `pnpm test:pages` against this preview, or `PAGES_TEST_URL=https://hellophong.github.io/pharma-lexicon/ pnpm test:pages` to verify the public site. These checks validate asset paths, direct term URLs, search, bookmarks, onboarding, submissions, mobile layout, and absence of browser errors. GitHub repository Settings → Pages must use **GitHub Actions** as its source. The `github-pages` environment allows the feature branch to deploy. The workflow may also be run manually from the Actions tab. A failed validation prevents deployment; the previous successful site remains published.
 
 ## Product and design
 
@@ -58,7 +69,7 @@ Suggestions are saved on the current browser only. The completion view illustrat
 
 ### URLs and metadata
 
-A term has a direct URL such as `/#term/mlr`; a path uses `/#path/first-mlr`. Terms update the document title and have a copy-link action. Invalid term/path IDs have a recovery screen. Generic description, Open Graph metadata, social artwork, and a favicon are included. Hash routes do not provide term-specific search indexing or social cards. Before deployment, set an absolute canonical URL and production social image URL; the included PNG social image supports common crawlers. An SSR or prerendered routing layer is the next step for indexed public term pages.
+A term has a direct URL such as `/#term/mlr`; a path uses `/#path/first-mlr`. Terms update the document title and have a copy-link action. Invalid term/path IDs have a recovery screen. Generic description, Open Graph metadata, social artwork, and a favicon are included. Hash routes do not provide term-specific search indexing or social cards. The canonical URL and social image point to the public GitHub Pages site; the included PNG social image supports common crawlers. An SSR or prerendered routing layer is the next step for indexed public term pages.
 
 ## Content management
 
