@@ -29,7 +29,7 @@ pnpm preview
 
 ## Product and design
 
-Warm paper, forest green, and restrained citron give the library an editorial identity. Self-hosted DM Sans supports reading; Bodoni Moda creates distinct acronym and headline moments. The visuals are code-native typography and lines, with no stock photos or image dependencies.
+Warm paper, forest green, and restrained citron give the library an editorial identity. Self-hosted DM Sans supports reading; Bodoni Moda creates distinct acronym and headline moments. The visual system uses typography and lines, plus an image-generated open-reference brand symbol. The original transparent asset is stored at `public/brand/pharma-lexicon-symbol.png` and rendered as an alpha mask in forest green (header) and citron (footer). The product name remains live text for legibility and accessibility. See `public/brand/README.md` for the generation prompt.
 
 The simplified page starts directly with the lexicon beneath navigation, followed by the contribution section and a deep-green footer. The hero, audience strip, problem statement, storytelling, context note, learning-path cards, and product-vision sections have been removed. The glossary layout and capabilities are unchanged. Reduced-motion preferences disable transitions and smooth scrolling.
 

@@ -246,26 +246,14 @@ button {
   font-weight: 400;
 }
 .brand-mark {
-  position: relative;
-  font-family: Georgia, serif;
-  font-size: 40px;
-  font-weight: 700;
-  line-height: 0.8;
   display: block;
-  width: 32px;
-  height: 36px;
-  letter-spacing: -7px;
-}
-.brand-mark > span {
-  font-size: 33px;
-}
-.brand-mark i {
-  position: absolute;
-  background: var(--ink);
-  width: 5px;
-  height: 5px;
-  right: 0;
-  top: 4px;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  background: var(--forest);
+  mask: url("/brand/pharma-lexicon-symbol.png") center / contain no-repeat;
+  -webkit-mask: url("/brand/pharma-lexicon-symbol.png") center / contain
+    no-repeat;
 }
 .site-header nav {
   display: flex;
@@ -2616,8 +2604,8 @@ button {
   background: var(--forest);
   color: var(--paper);
 }
-.footer-surface .brand-mark i {
-  background: var(--paper);
+.footer-surface .brand-mark {
+  background: var(--citron);
 }
 .footer-surface .footer-top {
   border-color: #536f5a;
@@ -2634,4 +2622,14 @@ button {
 }
 .footer-surface :focus-visible {
   outline-color: var(--citron);
+}
+
+@media (max-width: 760px) {
+  .brand {
+    gap: 7px;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
 }

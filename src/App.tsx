@@ -135,10 +135,7 @@ function App() {
       </a>
       <header className="site-header">
         <a className="brand" href="#" aria-label="Pharma Lexicon home">
-          <span className="brand-mark">
-            p<span>l</span>
-            <i />
-          </span>
+          <span className="brand-mark" aria-hidden="true" />
           <span>
             pharma<span className="brand-light">lexicon</span>
           </span>
@@ -183,7 +180,7 @@ function App() {
         <section id="lexicon" className="lexicon section-shell">
           <div className="lexicon-heading">
             <div>
-              <span className="eyebrow">03 / YOUR EVERYDAY REFERENCE</span>
+              <span className="eyebrow">01 / YOUR EVERYDAY REFERENCE</span>
               <h1>
                 The lexicon<span className="title-dot">.</span>
               </h1>
@@ -385,7 +382,7 @@ function App() {
         </section>
         <section id="contribute" className="contribute section-shell">
           <div>
-            <span className="eyebrow">05 / BETTER TOGETHER</span>
+            <span className="eyebrow">02 / BETTER TOGETHER</span>
             <h2>
               Your team knows things.
               <br />
@@ -435,11 +432,8 @@ function App() {
       <div className="footer-surface">
         <footer className="site-footer" id="editorial-policy">
           <div className="footer-top">
-            <a className="brand" href="#">
-              <span className="brand-mark">
-                p<span>l</span>
-                <i />
-              </span>
+            <a className="brand" href="#" aria-label="Pharma Lexicon home">
+              <span className="brand-mark" aria-hidden="true" />
               <span>
                 pharma<span className="brand-light">lexicon</span>
               </span>
