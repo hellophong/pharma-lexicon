@@ -153,28 +153,39 @@ function App() {
             Suggest a term <Plus size={14} />
           </button>
         </nav>
-        <button
-          className="header-saved"
-          onClick={() => {
-            setOnlySaved(true);
-            setQuery("");
-            setCategory("All categories");
-            setLetter("All");
-            browse();
-          }}
-        >
-          <Bookmark size={16} />
-          <span>Saved</span>
-          <span className="saved-count">{saved.items.length}</span>
-        </button>
-        <button
-          className="mobile-menu icon-button"
-          onClick={() => setMenu(!menu)}
-          aria-label="Toggle navigation"
-          aria-expanded={menu}
-        >
-          {menu ? <X /> : <Menu />}
-        </button>
+        <div className="header-actions">
+          <button
+            className="header-saved"
+            aria-label={`Saved terms (${saved.items.length})`}
+            onClick={() => {
+              setOnlySaved(true);
+              setQuery("");
+              setCategory("All categories");
+              setLetter("All");
+              browse();
+            }}
+          >
+            <Bookmark size={16} />
+            <span>Saved</span>
+            <span className="saved-count">{saved.items.length}</span>
+          </button>
+          <a
+            className="icon-button hub-link"
+            href="https://hellophong.github.io/pharma-lab/"
+            aria-label="Back to Pharma Lab"
+            title="Back to Pharma Lab"
+          >
+            <span className="hub-icon" aria-hidden="true" />
+          </a>
+          <button
+            className="mobile-menu icon-button"
+            onClick={() => setMenu(!menu)}
+            aria-label="Toggle navigation"
+            aria-expanded={menu}
+          >
+            {menu ? <X /> : <Menu />}
+          </button>
+        </div>
       </header>
       <main id="main">
         <section id="lexicon" className="lexicon section-shell">

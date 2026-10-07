@@ -2633,3 +2633,49 @@ button {
     height: 36px;
   }
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.hub-link {
+  color: var(--ink);
+}
+.hub-icon {
+  display: block;
+  width: 23px;
+  height: 23px;
+  background: currentColor;
+  mask: url("/icons/pharma-lab-home.svg") center / contain no-repeat;
+  -webkit-mask: url("/icons/pharma-lab-home.svg") center / contain no-repeat;
+}
+@media (max-width: 760px) {
+  .header-actions {
+    margin-left: auto;
+    gap: 6px;
+  }
+}
+@media (max-width: 400px) {
+  .header-actions {
+    gap: 2px;
+  }
+  .header-actions .header-saved {
+    width: 28px;
+    min-height: 36px;
+    justify-content: center;
+  }
+  .header-actions .saved-count {
+    display: none;
+  }
+  .header-actions .mobile-menu {
+    width: 32px;
+  }
+}
+@media (max-width: 370px) {
+  .site-header {
+    padding-inline: 16px;
+    gap: 8px;
+  }
+}
